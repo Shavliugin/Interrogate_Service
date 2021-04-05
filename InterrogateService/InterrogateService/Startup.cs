@@ -1,15 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using InterrogateService.Core;
+using InterrogateService.Core.Vk;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Threading;
+using VkNet;
+using VkNet.Enums.Filters;
+using VkNet.Model;
 
 namespace InterrogateService
 {
@@ -45,7 +44,9 @@ namespace InterrogateService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            });            
+
+            VkPublicManager.Start();
         }
     }
 }
