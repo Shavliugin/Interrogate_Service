@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using InterrogateService.Core.Common.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using VkNet;
 using VkNet.Enums.Filters;
@@ -7,60 +9,49 @@ using VkNet.Model.RequestParams;
 
 namespace InterrogateService.Core.Vk
 {
-    public static class VkPublicManager
+    public class VkPublicManager: IInterrogateService
     {
-        public static void Start()
+        private VkApi _api { get; set; }
+
+        private VkApi Api
         {
-            var api = new VkApi();
-
-            api.Authorize(new ApiAuthParams()
+            get
             {
-                Login = "+79147225763",
-                Password = "Ktotyrj20189242324426",
-                ApplicationId = 7814158,
-                Settings = Settings.All
-            });
+                if (_api != null)
+                    return _api;
 
-            var timer = new Timer(Interrogate, api, 0, 300000);
+                _api = new VkApi();
+
+                _api.Authorize(new ApiAuthParams()
+                {
+                    Login = "+79147225763",
+                    Password = "Ktotyrj20189242324426",
+                    ApplicationId = 7814158,
+                    Settings = Settings.All
+                });
+
+                return _api;
+            }            
         }
 
-
-        private static void Interrogate(object api)
+        public void Interrogate(IEnumerable<SocialMediaSource> vkPublics)
         {
-
-            var vkApi = api as VkApi;
-            var vkPublics = getVkPublics();
-
             foreach (var vkPublic in vkPublics)
             {
-                var wall = vkApi.Wall.Get(new WallGetParams()
+                var wall = Api.Wall.Get(new WallGetParams()
                 {
-                    Domain = vkPublic.Name
+                    Domain = vkPublic.Id
                 });
 
                 foreach (var post in wall.WallPosts)
                 {
-                    if (post.Id > vkPublic.LastGotPostId)
+                    if (post.Date > vkPublic.LastGotPostDateTime)
                     {
                         //TODO: Делаем сообщение
                     }
                 }
             }
-
-
-        }
-
-        private static IEnumerable<VkPublic> getVkPublics()
-        {
-            return new List<VkPublic>()
-            {
-                new VkPublic()
-                {
-                LastGotPostId = 0,
-                Name = "feminism_visually"
-                }
-            };
-        }
+        }        
     }
 }
 

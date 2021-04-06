@@ -40,10 +40,10 @@ namespace InterrogateService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });            
+            });
 
-            VkPublicManager.Start();
-            YoutubeManager.Start();
+            var Interrogater = new Interrogater(new YoutubeManager(), new VkPublicManager());
+            Interrogater.Start();
         }
     }
 }

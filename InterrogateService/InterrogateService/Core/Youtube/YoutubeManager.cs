@@ -1,28 +1,47 @@
 ﻿using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
+using System.Collections.Generic;
+using InterrogateService.Core.Common.Interfaces;
 
 namespace InterrogateService.Core.Youtube
 {
-    public static class YoutubeManager
+    public class YoutubeManager : IInterrogateService
     {
-        public static void Start()
+        private YouTubeService _youtubeService { get; set; }
+
+        private YouTubeService youtubeService
         {
-            Interrogate(null);
+            get
+            {
+                if (_youtubeService != null)
+                    return _youtubeService;
+
+                _youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    ApiKey = "AIzaSyCnhCLd24zICvGgU_AagWtypes81FO2gKE"
+                });
+
+                return _youtubeService;
+            }
         }
 
-        public static async void Interrogate(object api)
+        public void Interrogate(IEnumerable<SocialMediaSource> youtubeChannels)
         {
-            var service = new YouTubeService(new BaseClientService.Initializer()
+            foreach (var youtubeChannel in youtubeChannels)
             {
-                ApiKey = "AIzaSyCnhCLd24zICvGgU_AagWtypes81FO2gKE"
-            });
+                var searchListRequest = youtubeService.Search.List("snippet");
+                searchListRequest.Type = "video";
+                searchListRequest.MaxResults = 5;
+                searchListRequest.ChannelId = youtubeChannel.Id;
+                searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
 
-            var searchListRequest = service.Search.List("snippet");
-            searchListRequest.ChannelId = "UCCYMY6j5mUvPMPzvN5bxuKA";
-            searchListRequest.Type = "video";
-            searchListRequest.Order = SearchResource.ListRequest.OrderEnum.Date;
+                var searchListResult = searchListRequest.Execute();
 
-            var searchListResult = searchListRequest.Execute();
+                foreach (var item in searchListResult.Items)
+                {
+                    //TODO: Логика
+                }
+            }
         }
     }
 }
