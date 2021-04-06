@@ -1,14 +1,10 @@
-using InterrogateService.Core;
 using InterrogateService.Core.Vk;
+using InterrogateService.Core.Youtube;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Threading;
-using VkNet;
-using VkNet.Enums.Filters;
-using VkNet.Model;
 
 namespace InterrogateService
 {
@@ -47,6 +43,7 @@ namespace InterrogateService
             });            
 
             VkPublicManager.Start();
+            YoutubeManager.Start();
         }
     }
 }

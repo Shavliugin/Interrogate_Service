@@ -3,8 +3,8 @@
     public class YoutubeChannel
     {
         /// <summary>
-        /// Название канала
+        /// Идентификатор канала
         /// </summary>
-        public string Name { get; set; }
+        public string ChannelId { get; set; }
     }
 }
